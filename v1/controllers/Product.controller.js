@@ -33,9 +33,28 @@ exports.getProduct = async (req, res, next) => {
   if (req.query.searchBy) {
     let fieldsArray;
     if (req.query.searchFields) {
-      fieldsArray = req.query.searchFields;
+      fieldsArray = req.query.searchFields.split(','); // Assuming searchFields are comma-separated
     }
-  }
+    
+    if (fieldsArray && fieldsArray.length > 0) {
+        productFilters = {
+        [Op.or]: fieldsArray.map(field => ({
+          [field]: {
+            [Op.like]: `%${req.query.searchBy}%`
+          }
+        }))
+      };
+    } else {
+      // If searchFields are not provided, search across all columns
+      productFilters = {
+        [Op.or]: Object.keys(ProductModel.rawAttributes).map(column => ({
+          [column]: {
+            [Op.like]: `%${req.query.searchBy}%`
+          }
+        }))
+      };
+    }
+}
   let { rows, count } = await ProductModel.findAndCountAll({
     where: productFilters,
     limit,
