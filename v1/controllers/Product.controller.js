@@ -33,7 +33,7 @@ exports.getProduct = async (req, res, next) => {
   if (req.query.searchBy) {
     let fieldsArray;
     if (req.query.searchFields) {
-      fieldsArray = req.query.searchFields.split(','); // Assuming searchFields are comma-separated
+      fieldsArray = JSON.parse(req.query.searchFields.split(',')); // Assuming searchFields are comma-separated
     }
     
     if (fieldsArray && fieldsArray.length > 0) {
@@ -60,6 +60,7 @@ exports.getProduct = async (req, res, next) => {
     limit,
     offset,
     order: [[`${orderBY}`, `${orderDirection}`]],
+    logging:true
   });
 
   res.status(200).json({
