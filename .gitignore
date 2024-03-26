@@ -1,0 +1,7 @@
+/node_modules/
+/logs/
+/public/
+node_modules
+npm-debug.log
+server/boot/custom.js
+*.env
